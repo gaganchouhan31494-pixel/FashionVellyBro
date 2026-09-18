@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { X, Star, Heart, ShoppingBag, ShieldCheck, Truck, RotateCcw, Check } from 'lucide-react';
+import { X, Star, Heart, Check, Sparkles, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ProductDetailModalProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
-  onAddToCart: (product: Product, size: string, color: string, qty: number) => void;
   onToggleWishlist: (product: Product) => void;
   isWishlisted: boolean;
 }
@@ -16,7 +15,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
   isOpen,
   onClose,
-  onAddToCart,
   onToggleWishlist,
   isWishlisted
 }) => {
@@ -25,13 +23,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] || 'M');
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || 'Default');
-  const [quantity, setQuantity] = useState(1);
-  const [addedAnimation, setAddedAnimation] = useState(false);
+  const [inquirySent, setInquirySent] = useState(false);
 
-  const handleAdd = () => {
-    onAddToCart(product, selectedSize, selectedColor, quantity);
-    setAddedAnimation(true);
-    setTimeout(() => setAddedAnimation(false), 2000);
+  const handleInquire = () => {
+    setInquirySent(true);
+    setTimeout(() => setInquirySent(false), 3000);
   };
 
   return (
@@ -110,8 +106,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     ${product.price.toFixed(2)}
                   </span>
                 )}
-                <span className="ml-auto bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-3 py-1 rounded-full">
-                  In Stock ({product.stock} left)
+                <span className="ml-auto bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  Showroom Exclusive
                 </span>
               </div>
 
@@ -123,7 +119,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-5">
                   <label className="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-2">
-                    Color: <span className="text-white font-semibold">{selectedColor}</span>
+                    Available Finish: <span className="text-white font-semibold">{selectedColor}</span>
                   </label>
                   <div className="flex gap-3">
                     {product.colors.map((c) => (
@@ -150,9 +146,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-xs uppercase tracking-wider text-zinc-400 font-bold">
-                      Select Size
+                      Available Sizes
                     </label>
-                    <button className="text-xs text-[#E50914] hover:underline font-semibold">Size Guide</button>
+                    <span className="text-xs text-zinc-500">Custom tailored fit</span>
                   </div>
                   <div className="flex flex-wrap gap-2.5">
                     {product.sizes.map((sz) => (
@@ -171,46 +167,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </div>
                 </div>
               )}
-
-              {/* Quantity */}
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">Quantity</span>
-                <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3.5 py-2 text-zinc-400 hover:text-white transition-colors"
-                  >
-                    -
-                  </button>
-                  <span className="px-4 py-2 text-white font-bold text-sm">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-3.5 py-2 text-zinc-400 hover:text-white transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
             </div>
 
             {/* Actions */}
-            <div className="space-y-3 pt-4 border-t border-zinc-800">
+            <div className="space-y-3 pt-6 border-t border-zinc-800">
               <div className="flex gap-3">
                 <button
-                  onClick={handleAdd}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-sm transition-all shadow-lg ${
-                    addedAnimation
+                  onClick={handleInquire}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-xs uppercase tracking-widest transition-all shadow-lg ${
+                    inquirySent
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#E50914] hover:bg-[#c40711] text-white shadow-[0_6px_20px_rgba(229,9,20,0.4)]'
                   }`}
                 >
-                  {addedAnimation ? (
+                  {inquirySent ? (
                     <>
-                      <Check className="w-5 h-5" /> Added to Cart!
+                      <Check className="w-4 h-4" /> Inquiry Sent to Showroom!
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-5 h-5" /> Add to Cart
+                      <Sparkles className="w-4 h-4" /> Inquire About Piece
                     </>
                   )}
                 </button>
@@ -222,26 +198,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       ? 'bg-[#E50914] border-[#E50914] text-white'
                       : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white'
                   }`}
-                  title="Wishlist"
+                  title="Save to Favorites"
                 >
                   <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
                 </button>
               </div>
 
-              {/* Perks */}
-              <div className="grid grid-cols-3 gap-2 pt-2 text-[11px] text-zinc-400 text-center">
-                <div className="flex flex-col items-center gap-1 bg-zinc-900/60 p-2 rounded-lg border border-zinc-800">
-                  <Truck className="w-4 h-4 text-[#E50914]" />
-                  <span>Free Express Shipping</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 bg-zinc-900/60 p-2 rounded-lg border border-zinc-800">
-                  <RotateCcw className="w-4 h-4 text-[#E50914]" />
-                  <span>30-Day Returns</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 bg-zinc-900/60 p-2 rounded-lg border border-zinc-800">
-                  <ShieldCheck className="w-4 h-4 text-[#E50914]" />
-                  <span>100% Secure Checkout</span>
-                </div>
+              {/* Founder / Showroom Note */}
+              <div className="flex items-center gap-2.5 p-3 bg-zinc-900/60 rounded-xl border border-zinc-800 text-xs text-zinc-400">
+                <MapPin className="w-4 h-4 text-[#E50914] shrink-0" />
+                <span>Showcase piece curated by Founder Shumit Kumar. Available for private viewing at our flagship showroom.</span>
               </div>
             </div>
           </div>

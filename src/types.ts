@@ -27,14 +27,6 @@ export interface Category {
   description: string;
 }
 
-export interface CartItem {
-  id: string; // unique combination of product.id + size + color
-  product: Product;
-  selectedSize: string;
-  selectedColor: string;
-  quantity: number;
-}
-
 export interface Review {
   id: string;
   author: string;
@@ -45,45 +37,9 @@ export interface Review {
   productName?: string;
 }
 
-export interface UserAddress {
-  id: string;
-  fullName: string;
-  addressLine: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  isDefault: boolean;
-}
-
-export interface UserProfile {
-  name: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  tier: string;
-  points: number;
-}
-
-export interface Order {
-  id: string;
-  date: string;
-  items: CartItem[];
-  total: number;
-  status: 'Processing' | 'In Transit' | 'Delivered' | 'Cancelled';
-  shippingAddress: UserAddress;
-  paymentMethod: string;
-  trackingNumber: string;
-}
-
 export type ActivePage = 
   | 'home' 
   | 'shop' 
-  | 'product-detail' 
-  | 'categories' 
-  | 'cart' 
-  | 'checkout' 
-  | 'auth' 
-  | 'profile' 
-  | 'orders' 
+  | 'about'
+  | 'owner'
   | 'contact';

@@ -6,7 +6,6 @@ import { Search, SlidersHorizontal, X } from 'lucide-react';
 
 interface ShopPageProps {
   onSelectProduct: (product: Product) => void;
-  onAddToCart: (product: Product, size: string, color: string) => void;
   onToggleWishlist: (product: Product) => void;
   wishlistIds: string[];
   searchQuery: string;
@@ -15,7 +14,6 @@ interface ShopPageProps {
 
 export const ShopPage: React.FC<ShopPageProps> = ({
   onSelectProduct,
-  onAddToCart,
   onToggleWishlist,
   wishlistIds,
   searchQuery,
@@ -52,9 +50,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
-          <span className="text-[#E50914] text-xs font-bold uppercase tracking-widest block mb-1">Catalog</span>
+          <span className="text-[#E50914] text-xs font-bold uppercase tracking-widest block mb-1">Catalog Showcase</span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-['Syne'] tracking-tight">
-            Shop All Collections
+            All Collections & Products
           </h1>
         </div>
 
@@ -63,7 +61,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           <div className="relative w-full sm:w-64">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search catalog..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#E50914]"
@@ -156,31 +154,26 @@ export const ShopPage: React.FC<ShopPageProps> = ({
             />
             <div className="flex justify-between text-[10px] text-zinc-500 mt-1">
               <span>$50</span>
-              <span>$400</span>
+              <span>$400+</span>
             </div>
           </div>
         </div>
 
         {/* Product Grid */}
-        <div className="lg:col-span-3">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xs text-zinc-400">
-              Showing <span className="font-bold text-white">{filteredProducts.length}</span> products
-            </p>
+        <div className="lg:col-span-3 space-y-6">
+          <div className="flex items-center justify-between text-xs text-zinc-400 bg-zinc-900/40 px-4 py-3 rounded-xl border border-zinc-800">
+            <span>Showing <strong className="text-white">{filteredProducts.length}</strong> showroom pieces</span>
+            {selectedCategory !== 'All' && <span>Category: <strong className="text-[#E50914]">{selectedCategory}</strong></span>}
           </div>
 
           {filteredProducts.length === 0 ? (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center space-y-4">
-              <p className="text-zinc-400 text-base">No products found matching your filters.</p>
+            <div className="text-center py-20 bg-zinc-900/30 rounded-2xl border border-zinc-800 space-y-3">
+              <p className="text-zinc-400 text-sm">No products found matching your criteria.</p>
               <button
-                onClick={() => {
-                  setSelectedCategory('All');
-                  setSearchQuery('');
-                  setMaxPrice(400);
-                }}
-                className="bg-[#E50914] text-white px-6 py-2.5 rounded-xl text-xs font-bold"
+                onClick={() => { setSelectedCategory('All'); setSearchQuery(''); setMaxPrice(400); }}
+                className="bg-[#E50914] text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl"
               >
-                Clear Filters
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -190,7 +183,6 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                   key={product.id}
                   product={product}
                   onSelect={onSelectProduct}
-                  onAddToCart={onAddToCart}
                   onToggleWishlist={onToggleWishlist}
                   isWishlisted={wishlistIds.includes(product.id)}
                 />

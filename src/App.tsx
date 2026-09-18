@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ActivePage, Product, CartItem, Order, UserProfile } from './types';
+import { ActivePage, Product } from './types';
 import { PRODUCTS } from './data/products';
 import { Navbar } from './components/Navbar';
 import { MobileNav } from './components/MobileNav';
@@ -10,41 +10,24 @@ import { LoadingScreen } from './components/LoadingScreen';
 
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
-import { CategoriesPage } from './pages/CategoriesPage';
-import { CartPage } from './pages/CartPage';
-import { CheckoutPage } from './pages/CheckoutPage';
-import { AuthPage } from './pages/AuthPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { OrderHistoryPage } from './pages/OrderHistoryPage';
+import { AboutPage } from './pages/AboutPage';
+import { OwnerPage } from './pages/OwnerPage';
 import { ContactPage } from './pages/ContactPage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
   const [activePage, setActivePage] = useState<ActivePage>('home');
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('fvb_cart');
-      return saved ? JSON.parse(saved) : [
-        {
-          id: 'p1-M-Pitch Black',
-          product: PRODUCTS[0],
-          selectedSize: 'M',
-          selectedColor: 'Pitch Black',
-          quantity: 1
-        }
-      ];
-    } catch {
-      return [
-        {
-          id: 'p1-M-Pitch Black',
-          product: PRODUCTS[0],
-          selectedSize: 'M',
-          selectedColor: 'Pitch Black',
-          quantity: 1
-        }
-      ];
-    }
-  });
+  
+  const handlePageChange = (newPage: ActivePage) => {
+    if (newPage === activePage) return;
+    setIsPageTransitioning(true);
+    setActivePage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      setIsPageTransitioning(false);
+    }, 400);
+  };
 
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => {
     try {
@@ -55,93 +38,18 @@ export default function App() {
     }
   });
 
-  const [orders, setOrders] = useState<Order[]>(() => {
-    try {
-      const saved = localStorage.getItem('fvb_orders');
-      return saved ? JSON.parse(saved) : [
-        {
-          id: 'FVB-928192',
-          date: 'May 12, 2026',
-          items: [{
-            id: 'p2-L-Carbon Black',
-            product: PRODUCTS[1],
-            selectedSize: 'L',
-            selectedColor: 'Carbon Black',
-            quantity: 1
-          }],
-          total: 119.00,
-          status: 'Delivered',
-          shippingAddress: {
-            id: 'addr-1',
-            fullName: 'Alex Vance',
-            addressLine: '742 Evergreen Terrace',
-            city: 'New York',
-            state: 'NY',
-            postalCode: '10001',
-            country: 'United States',
-            isDefault: true
-          },
-          paymentMethod: 'Credit Card',
-          trackingNumber: 'TRK-892109482'
-        }
-      ];
-    } catch {
-      return [];
-    }
-  });
-
-  const [user, setUser] = useState<UserProfile>({
-    name: 'Alex Vance',
-    email: 'alex.vance@fashionvellybro.com',
-    phone: '+1 (555) 382-9102',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
-    tier: 'VIP Elite Member',
-    points: 1250
-  });
-
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [aiStylistOpen, setAiStylistOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [promoCode, setPromoCode] = useState('FVB20');
-  const [discountApplied, setDiscountApplied] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem('fvb_cart', JSON.stringify(cart));
-  }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem('fvb_wishlist', JSON.stringify(wishlistIds));
-  }, [wishlistIds]);
-
-  useEffect(() => {
-    localStorage.setItem('fvb_orders', JSON.stringify(orders));
-  }, [orders]);
-
-  const handleAddToCart = (product: Product, size: string, color: string, qty: number = 1) => {
-    const cartItemId = `${product.id}-${size}-${color}`;
-    setCart(prev => {
-      const existing = prev.find(item => item.id === cartItemId);
-      if (existing) {
-        return prev.map(item =>
-          item.id === cartItemId ? { ...item, quantity: item.quantity + qty } : item
-        );
-      }
-      return [...prev, { id: cartItemId, product, selectedSize: size, selectedColor: color, quantity: qty }];
-    });
-  };
-
-  const handleUpdateQuantity = (id: string, qty: number) => {
-    if (qty <= 0) {
-      handleRemoveCartItem(id);
-      return;
+    try {
+      localStorage.setItem('fvb_wishlist', JSON.stringify(wishlistIds));
+    } catch {
+      // ignore
     }
-    setCart(prev => prev.map(item => item.id === id ? { ...item, quantity: qty } : item));
-  };
-
-  const handleRemoveCartItem = (id: string) => {
-    setCart(prev => prev.filter(item => item.id !== id));
-  };
+  }, [wishlistIds]);
 
   const handleToggleWishlist = (product: Product) => {
     setWishlistIds(prev =>
@@ -154,37 +62,39 @@ export default function App() {
     setIsDetailModalOpen(true);
   };
 
-  const handlePlaceOrder = (newOrder: Order) => {
-    setOrders(prev => [newOrder, ...prev]);
-    setCart([]);
-  };
-
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-
   return (
-    <div className="min-h-screen bg-[#0b0b0c] text-white flex flex-col font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#E50914] selection:text-white">
+    <div className="min-h-screen bg-[#050506] text-white flex flex-col font-['Plus_Jakarta_Sans',sans-serif] selection:bg-[#E50914] selection:text-white">
       
       {/* Initial Loading Screen */}
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
+      {/* Page Transition Splash Overlay */}
+      {isPageTransitioning && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity animate-fadeIn">
+          <div className="w-12 h-12 border-3 border-[#E50914] border-t-transparent rounded-full animate-spin mb-4 shadow-[0_0_20px_#E50914]"></div>
+          <p className="text-xs uppercase tracking-[0.3em] font-bold text-white font-['Syne']">Loading Showroom...</p>
+        </div>
+      )}
+
       {/* Navbar */}
       <Navbar
         activePage={activePage}
-        setActivePage={setActivePage}
-        cartCount={cartCount}
+        setActivePage={handlePageChange}
         wishlistCount={wishlistIds.length}
         onOpenAiStylist={() => setAiStylistOpen(true)}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQuery={(q) => {
+          setSearchQuery(q);
+          if (activePage !== 'shop') handlePageChange('shop');
+        }}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 pb-24 md:pb-0">
         {activePage === 'home' && (
           <HomePage
-            setActivePage={setActivePage}
+            setActivePage={handlePageChange}
             onSelectProduct={handleSelectProduct}
-            onAddToCart={(p, sz, cl) => handleAddToCart(p, sz, cl, 1)}
             onToggleWishlist={handleToggleWishlist}
             wishlistIds={wishlistIds}
           />
@@ -192,57 +102,17 @@ export default function App() {
         {activePage === 'shop' && (
           <ShopPage
             onSelectProduct={handleSelectProduct}
-            onAddToCart={(p, sz, cl) => handleAddToCart(p, sz, cl, 1)}
             onToggleWishlist={handleToggleWishlist}
             wishlistIds={wishlistIds}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
         )}
-        {activePage === 'categories' && (
-          <CategoriesPage
-            setActivePage={setActivePage}
-            onSelectProduct={handleSelectProduct}
-          />
+        {activePage === 'about' && (
+          <AboutPage />
         )}
-        {activePage === 'cart' && (
-          <CartPage
-            cart={cart}
-            onUpdateQuantity={handleUpdateQuantity}
-            onRemoveItem={handleRemoveCartItem}
-            setActivePage={setActivePage}
-            promoCode={promoCode}
-            setPromoCode={setPromoCode}
-            discountApplied={discountApplied}
-            setDiscountApplied={setDiscountApplied}
-          />
-        )}
-        {activePage === 'checkout' && (
-          <CheckoutPage
-            cart={cart}
-            setActivePage={setActivePage}
-            onPlaceOrder={handlePlaceOrder}
-            discountApplied={discountApplied}
-          />
-        )}
-        {activePage === 'auth' && (
-          <AuthPage
-            setActivePage={setActivePage}
-            setUser={setUser}
-          />
-        )}
-        {activePage === 'profile' && (
-          <ProfilePage
-            user={user}
-            setUser={setUser}
-            setActivePage={setActivePage}
-          />
-        )}
-        {activePage === 'orders' && (
-          <OrderHistoryPage
-            orders={orders}
-            setActivePage={setActivePage}
-          />
+        {activePage === 'owner' && (
+          <OwnerPage />
         )}
         {activePage === 'contact' && (
           <ContactPage
@@ -256,7 +126,6 @@ export default function App() {
         product={selectedProduct}
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
-        onAddToCart={(p, sz, cl, qty) => handleAddToCart(p, sz, cl, qty)}
         onToggleWishlist={handleToggleWishlist}
         isWishlisted={selectedProduct ? wishlistIds.includes(selectedProduct.id) : false}
       />
@@ -270,14 +139,13 @@ export default function App() {
       {/* Mobile Bottom Navigation */}
       <MobileNav
         activePage={activePage}
-        setActivePage={setActivePage}
-        cartCount={cartCount}
+        setActivePage={handlePageChange}
+        wishlistCount={wishlistIds.length}
       />
 
       {/* Footer */}
-      <Footer setActivePage={setActivePage} />
+      <Footer setActivePage={handlePageChange} />
 
     </div>
   );
 }
-

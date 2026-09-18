@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { ActivePage } from '../types';
 import { Logo } from './Logo';
-import { Search, ShoppingBag, Heart, User, Menu, X, Sparkles } from 'lucide-react';
+import { Search, Heart, Menu, X, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
   activePage: ActivePage;
   setActivePage: (page: ActivePage) => void;
-  cartCount: number;
   wishlistCount: number;
   onOpenAiStylist: () => void;
   searchQuery: string;
@@ -16,7 +15,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   activePage,
   setActivePage,
-  cartCount,
   wishlistCount,
   onOpenAiStylist,
   searchQuery,
@@ -26,18 +24,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks: { label: string; page: ActivePage }[] = [
     { label: 'Home', page: 'home' },
-    { label: 'Shop', page: 'shop' },
-    { label: 'Categories', page: 'categories' },
-    { label: 'Order History', page: 'orders' },
+    { label: 'Collections', page: 'shop' },
+    { label: 'About', page: 'about' },
+    { label: 'Owner', page: 'owner' },
     { label: 'Contact', page: 'contact' },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-black/95 backdrop-blur-md border-b border-zinc-800/80 transition-all shadow-lg">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full bg-black/95 backdrop-blur-md border-b border-zinc-800/80 transition-all shadow-xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Logo */}
-        <div onClick={() => setActivePage('home')} className="cursor-pointer transform scale-90 sm:scale-100 origin-left">
+        <div onClick={() => setActivePage('home')} className="cursor-pointer">
           <Logo size="sm" className="md:scale-100" />
         </div>
 
@@ -47,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={link.page}
               onClick={() => setActivePage(link.page)}
-              className={`text-sm font-semibold transition-colors relative py-2 ${
+              className={`text-xs uppercase tracking-[0.2em] font-bold transition-all relative py-2 ${
                 activePage === link.page
                   ? 'text-[#E50914]'
                   : 'text-zinc-300 hover:text-white'
@@ -55,30 +53,30 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               {link.label}
               {activePage === link.page && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#E50914] rounded-full"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#E50914] rounded-full shadow-[0_0_10px_#E50914]"></span>
               )}
             </button>
           ))}
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3">
           
           {/* AI Stylist Button */}
           <button
             onClick={onOpenAiStylist}
-            className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-zinc-900 to-zinc-800 hover:from-zinc-800 hover:to-zinc-700 text-white border border-[#E50914]/40 px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-xs font-bold transition-all shadow-[0_0_15px_rgba(229,9,20,0.15)]"
-            title="Ask AI Stylist"
+            className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-zinc-900 to-zinc-800 hover:from-zinc-800 hover:to-zinc-700 text-white border border-[#E50914]/40 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-[0_0_15px_rgba(229,9,20,0.15)]"
+            title="Ask VellyBro AI Stylist"
           >
-            <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#E50914]" />
+            <Sparkles className="w-4 h-4 text-[#E50914]" />
             <span>AI Stylist</span>
           </button>
 
           {/* Search Bar (Desktop) */}
-          <div className="relative hidden lg:block w-48 xl:w-64">
+          <div className="relative hidden lg:block w-48 xl:w-60">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search catalog..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -92,44 +90,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Wishlist Button */}
           <button
             onClick={() => setActivePage('shop')}
-            className="relative p-2 text-zinc-300 hover:text-white transition-colors bg-zinc-900/80 border border-zinc-800 rounded-xl"
-            title="Wishlist"
+            className="relative p-2.5 text-zinc-300 hover:text-white transition-colors bg-zinc-900/80 border border-zinc-800 rounded-xl"
+            title="Saved Favorites"
           >
             <Heart className="w-4 h-4" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E50914] text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border border-black">
+              <span className="absolute -top-1 -right-1 bg-[#E50914] text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border border-black shadow-[0_0_8px_#E50914]">
                 {wishlistCount}
               </span>
             )}
           </button>
 
-          {/* Cart Button */}
-          <button
-            onClick={() => setActivePage('cart')}
-            className="relative p-2 text-zinc-300 hover:text-white transition-colors bg-zinc-900/80 border border-zinc-800 rounded-xl"
-            title="Cart"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#E50914] text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border border-black">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          {/* Profile Button (Desktop) */}
-          <button
-            onClick={() => setActivePage('profile')}
-            className="hidden sm:flex p-2 text-zinc-300 hover:text-white transition-colors bg-zinc-900/80 border border-zinc-800 rounded-xl"
-            title="Profile"
-          >
-            <User className="w-4 h-4" />
-          </button>
-
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-zinc-300 hover:text-white transition-colors bg-zinc-900 border border-zinc-800 rounded-xl ml-1"
+            className="md:hidden p-2.5 text-zinc-300 hover:text-white transition-colors bg-zinc-900 border border-zinc-800 rounded-xl ml-1"
           >
             {mobileMenuOpen ? <X className="w-5 h-5 text-[#E50914]" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -138,19 +113,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black/98 border-b border-zinc-800 px-5 py-6 space-y-4 shadow-2xl animate-fadeIn">
+        <div className="md:hidden bg-black/98 border-b border-zinc-800 px-6 py-6 space-y-4 shadow-2xl animate-fadeIn">
           <div className="relative mb-3">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search catalog..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 if (activePage !== 'shop') setActivePage('shop');
               }}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#E50914]"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#E50914]"
             />
-            <Search className="absolute right-3.5 top-3 w-4 h-4 text-zinc-500" />
+            <Search className="absolute right-4 top-3.5 w-4 h-4 text-zinc-500" />
           </div>
 
           <button
@@ -158,12 +133,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               onOpenAiStylist();
               setMobileMenuOpen(false);
             }}
-            className="w-full flex items-center justify-center gap-2 bg-[#E50914] text-white py-3 rounded-xl text-xs font-bold shadow-[0_0_15px_rgba(229,9,20,0.4)]"
+            className="w-full flex items-center justify-center gap-2 bg-[#E50914] text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(229,9,20,0.4)]"
           >
             <Sparkles className="w-4 h-4" /> Ask VellyBro AI Stylist
           </button>
 
-          <nav className="flex flex-col space-y-1 pt-2 border-t border-zinc-800/60">
+          <nav className="flex flex-col space-y-1.5 pt-2 border-t border-zinc-800/80">
             {navLinks.map((link) => (
               <button
                 key={link.page}
@@ -171,7 +146,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setActivePage(link.page);
                   setMobileMenuOpen(false);
                 }}
-                className={`text-left py-3 px-4 rounded-xl text-sm font-semibold transition-colors flex items-center justify-between ${
+                className={`text-left py-3 px-4 rounded-xl text-xs uppercase tracking-[0.2em] font-bold transition-colors flex items-center justify-between ${
                   activePage === link.page
                     ? 'bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/40'
                     : 'text-zinc-300 hover:bg-zinc-900'
@@ -181,16 +156,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-xs text-zinc-500 font-mono">→</span>
               </button>
             ))}
-            <button
-              onClick={() => {
-                setActivePage('profile');
-                setMobileMenuOpen(false);
-              }}
-              className="text-left py-3 px-4 rounded-xl text-sm font-semibold text-zinc-300 hover:bg-zinc-900 flex items-center justify-between"
-            >
-              <span>My Profile & VIP Points</span>
-              <User className="w-4 h-4 text-[#E50914]" />
-            </button>
           </nav>
         </div>
       )}

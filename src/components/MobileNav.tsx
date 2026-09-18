@@ -1,20 +1,20 @@
 import React from 'react';
 import { ActivePage } from '../types';
-import { Home, Compass, LayoutGrid, ShoppingBag, User } from 'lucide-react';
+import { Home, Compass, Info, UserCheck, Mail } from 'lucide-react';
 
 interface MobileNavProps {
   activePage: ActivePage;
   setActivePage: (page: ActivePage) => void;
-  cartCount: number;
+  wishlistCount: number;
 }
 
-export const MobileNav: React.FC<MobileNavProps> = ({ activePage, setActivePage, cartCount }) => {
+export const MobileNav: React.FC<MobileNavProps> = ({ activePage, setActivePage }) => {
   const navItems = [
     { label: 'Home', page: 'home' as ActivePage, icon: Home },
-    { label: 'Shop', page: 'shop' as ActivePage, icon: Compass },
-    { label: 'Categories', page: 'categories' as ActivePage, icon: LayoutGrid },
-    { label: 'Cart', page: 'cart' as ActivePage, icon: ShoppingBag, badge: cartCount },
-    { label: 'Profile', page: 'profile' as ActivePage, icon: User },
+    { label: 'Catalog', page: 'shop' as ActivePage, icon: Compass },
+    { label: 'About', page: 'about' as ActivePage, icon: Info },
+    { label: 'Owner', page: 'owner' as ActivePage, icon: UserCheck },
+    { label: 'Contact', page: 'contact' as ActivePage, icon: Mail },
   ];
 
   return (
@@ -33,11 +33,6 @@ export const MobileNav: React.FC<MobileNavProps> = ({ activePage, setActivePage,
           >
             <div className="relative">
               <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.75]'}`} />
-              {item.badge !== undefined && item.badge > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-[#E50914] text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center border border-black">
-                  {item.badge}
-                </span>
-              )}
             </div>
             <span className={`text-[10px] mt-1 font-medium ${isActive ? 'font-bold' : ''}`}>
               {item.label}

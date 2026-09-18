@@ -220,6 +220,86 @@ export const PRODUCTS: Product[] = [
     ],
     isNewArrival: true,
     stock: 25
+  },
+  {
+    id: 'p9',
+    name: 'FVB Urban Oversized Trench Coat',
+    category: 'Luxury Jackets',
+    price: 395.00,
+    discountPrice: 349.00,
+    discountPercent: 12,
+    rating: 4.9,
+    reviewsCount: 38,
+    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=900',
+    images: [
+      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=900'
+    ],
+    description: 'Floor-sweeping structured trench coat with storm flaps, belted waist, and scarlet inner lining.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: [
+      { name: 'Midnight Onyx', hex: '#0D0D0F' }
+    ],
+    isFeatured: true,
+    stock: 10
+  },
+  {
+    id: 'p10',
+    name: 'Executive Minimalist Wool Trousers',
+    category: 'Formal & Tailoring',
+    price: 165.00,
+    rating: 4.7,
+    reviewsCount: 62,
+    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=900',
+    images: [
+      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=900'
+    ],
+    description: 'Pleated luxury wool trousers tailored for a clean drape and modern silhouette.',
+    sizes: ['30', '32', '34', '36'],
+    colors: [
+      { name: 'Dark Charcoal', hex: '#1C1C1E' }
+    ],
+    isNewArrival: true,
+    stock: 20
+  },
+  {
+    id: 'p11',
+    name: 'FVB Signature Metallic Buckle Belt',
+    category: 'Accessories',
+    price: 85.00,
+    rating: 4.8,
+    reviewsCount: 44,
+    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=900',
+    images: [
+      'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=900'
+    ],
+    description: 'Italian leather belt featuring custom gunmetal hardware and subtle red accent stitch near the buckle.',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: [
+      { name: 'Matte Black', hex: '#0B0B0C' }
+    ],
+    stock: 30
+  },
+  {
+    id: 'p12',
+    name: 'VellyBro Heavyweight Zip Hoodie',
+    category: 'Hoodies & Sweatshirts',
+    price: 155.00,
+    discountPrice: 135.00,
+    discountPercent: 12,
+    rating: 4.9,
+    reviewsCount: 89,
+    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=900',
+    images: [
+      'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=900'
+    ],
+    description: 'Full-zip heavyweight french terry fleece hoodie with metallic double zippers and embroidered red FVB monogram.',
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    colors: [
+      { name: 'Pitch Black', hex: '#0B0B0C' },
+      { name: 'Pure White', hex: '#FFFFFF' }
+    ],
+    isFeatured: true,
+    stock: 16
   }
 ];
 

@@ -34,7 +34,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onOpenAiStylist }) => 
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-12 space-y-12">
       
       <div className="text-center max-w-2xl mx-auto space-y-3">
         <span className="text-[#E50914] text-xs font-bold uppercase tracking-widest">Support & Concierge</span>
