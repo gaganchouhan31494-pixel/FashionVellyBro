@@ -22,52 +22,72 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('fvb_cart');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'p1-M-Pitch Black',
-        product: PRODUCTS[0],
-        selectedSize: 'M',
-        selectedColor: 'Pitch Black',
-        quantity: 1
-      }
-    ];
+    try {
+      const saved = localStorage.getItem('fvb_cart');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'p1-M-Pitch Black',
+          product: PRODUCTS[0],
+          selectedSize: 'M',
+          selectedColor: 'Pitch Black',
+          quantity: 1
+        }
+      ];
+    } catch {
+      return [
+        {
+          id: 'p1-M-Pitch Black',
+          product: PRODUCTS[0],
+          selectedSize: 'M',
+          selectedColor: 'Pitch Black',
+          quantity: 1
+        }
+      ];
+    }
   });
 
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => {
-    const saved = localStorage.getItem('fvb_wishlist');
-    return saved ? JSON.parse(saved) : ['p1', 'p2'];
+    try {
+      const saved = localStorage.getItem('fvb_wishlist');
+      return saved ? JSON.parse(saved) : ['p1', 'p2'];
+    } catch {
+      return ['p1', 'p2'];
+    }
   });
 
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('fvb_orders');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'FVB-928192',
-        date: 'May 12, 2026',
-        items: [{
-          id: 'p2-L-Carbon Black',
-          product: PRODUCTS[1],
-          selectedSize: 'L',
-          selectedColor: 'Carbon Black',
-          quantity: 1
-        }],
-        total: 119.00,
-        status: 'Delivered',
-        shippingAddress: {
-          id: 'addr-1',
-          fullName: 'Alex Vance',
-          addressLine: '742 Evergreen Terrace',
-          city: 'New York',
-          state: 'NY',
-          postalCode: '10001',
-          country: 'United States',
-          isDefault: true
-        },
-        paymentMethod: 'Credit Card',
-        trackingNumber: 'TRK-892109482'
-      }
-    ];
+    try {
+      const saved = localStorage.getItem('fvb_orders');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'FVB-928192',
+          date: 'May 12, 2026',
+          items: [{
+            id: 'p2-L-Carbon Black',
+            product: PRODUCTS[1],
+            selectedSize: 'L',
+            selectedColor: 'Carbon Black',
+            quantity: 1
+          }],
+          total: 119.00,
+          status: 'Delivered',
+          shippingAddress: {
+            id: 'addr-1',
+            fullName: 'Alex Vance',
+            addressLine: '742 Evergreen Terrace',
+            city: 'New York',
+            state: 'NY',
+            postalCode: '10001',
+            country: 'United States',
+            isDefault: true
+          },
+          paymentMethod: 'Credit Card',
+          trackingNumber: 'TRK-892109482'
+        }
+      ];
+    } catch {
+      return [];
+    }
   });
 
   const [user, setUser] = useState<UserProfile>({
