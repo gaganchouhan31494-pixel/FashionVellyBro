@@ -1,0 +1,7 @@
+{
+  "name": "FashionVellyBro",
+  "description": "Professional, modern and premium e-commerce clothing brand for luxury streetwear and modern apparel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
