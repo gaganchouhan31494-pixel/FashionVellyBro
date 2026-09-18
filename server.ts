@@ -1,4 +1,5 @@
 import express from "express";
+import { createServer as createHttpServer } from "http";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
@@ -46,9 +47,16 @@ app.get("/api/health", (req, res) => {
 });
 
 async function startServer() {
+  const httpServer = createHttpServer(app);
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        // The preview proxy cannot forward Vite's custom WebSocket server.
+        // Disable HMR so the injected Vite client does not repeatedly reconnect.
+        hmr: false,
+      },
       appType: "spa",
     });
     app.use(vite.middlewares);
@@ -60,7 +68,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`FashionVellyBro server running on http://localhost:${PORT}`);
   });
 }
