@@ -61,12 +61,20 @@ async function startServer() {
       appType: "spa",
     });
 
-    // The preview proxy cannot carry Vite's HMR socket. Serve transformed HTML
-    // without the injected client so it does not try to reconnect endlessly.
+    // The preview proxy cannot carry Vite's HMR socket. Keep the Vite client
+    // route unavailable as a final guard against stale or injected HTML trying
+    // to open a connection that this server cannot expose.
+    app.get("/@vite/client", (_req, res) => {
+      res.status(404).end();
+    });
+
+    // Serve the entry document without the injected client so it does not try
+    // to reconnect endlessly through the preview proxy.
     app.use(async (req, res, next) => {
       if (
         req.method !== "GET" ||
         req.path.startsWith("/api/") ||
+        req.path.startsWith("/@vite/") ||
         path.extname(req.path)
       ) {
         return next();
