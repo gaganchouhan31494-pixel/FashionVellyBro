@@ -74,10 +74,13 @@ async function startServer() {
 
       try {
         const indexHtml = await fs.readFile(path.join(process.cwd(), "index.html"), "utf8");
-        // Serve the entry document directly. Vite's HTML transform injects
-        // /@vite/client even when HMR is disabled, but the preview proxy
-        // cannot establish that WebSocket connection.
-        res.status(200).type("html").send(indexHtml);
+        // Serve the entry document without Vite's dev client. The preview proxy
+        // cannot establish Vite's HMR WebSocket connection.
+        const previewHtml = indexHtml.replace(
+          /<script[^>]+src=["']\/@vite\/client["'][^>]*><\/script>\s*/g,
+          "",
+        );
+        res.status(200).type("html").send(previewHtml);
       } catch (error) {
         next(error);
       }
