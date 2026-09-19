@@ -64,19 +64,20 @@ async function startServer() {
     // The preview proxy cannot carry Vite's HMR socket. Serve transformed HTML
     // without the injected client so it does not try to reconnect endlessly.
     app.use(async (req, res, next) => {
-      if (req.method !== "GET" || !req.headers.accept?.includes("text/html")) {
+      if (
+        req.method !== "GET" ||
+        req.path.startsWith("/api/") ||
+        path.extname(req.path)
+      ) {
         return next();
       }
 
       try {
         const indexHtml = await fs.readFile(path.join(process.cwd(), "index.html"), "utf8");
-        const transformedHtml = await vite.transformIndexHtml(req.originalUrl, indexHtml);
-        const htmlWithoutHmrClient = transformedHtml.replace(
-          /<script type="module" src="\/@vite\/client"><\/script>\s*/,
-          "",
-        );
-
-        res.status(200).type("html").send(htmlWithoutHmrClient);
+        // Serve the entry document directly. Vite's HTML transform injects
+        // /@vite/client even when HMR is disabled, but the preview proxy
+        // cannot establish that WebSocket connection.
+        res.status(200).type("html").send(indexHtml);
       } catch (error) {
         next(error);
       }
