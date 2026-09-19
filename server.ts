@@ -82,12 +82,15 @@ async function startServer() {
 
       try {
         const indexHtml = await fs.readFile(path.join(process.cwd(), "index.html"), "utf8");
-        // Serve the entry document without Vite's dev client. The preview proxy
-        // cannot establish Vite's HMR WebSocket connection.
-        const previewHtml = indexHtml.replace(
-          /<script[^>]+src=["']\/@vite\/client["'][^>]*><\/script>\s*/g,
+        // Let Vite transform module scripts while HMR remains disabled for the
+        // preview proxy. This preserves the dev server's TS/JS transforms
+        // without emitting a client that tries to open an unsupported socket.
+        const transformedHtml = await vite.transformIndexHtml(req.originalUrl, indexHtml);
+        const previewHtml = transformedHtml.replace(
+          /<script[^>]+src=["'][^"']*\/@vite\/client[^"']*["'][^>]*><\/script>\s*/g,
           "",
         );
+        res.setHeader("Cache-Control", "no-store");
         res.status(200).type("html").send(previewHtml);
       } catch (error) {
         next(error);
