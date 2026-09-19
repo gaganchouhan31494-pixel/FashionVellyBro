@@ -1,5 +1,6 @@
 import express from "express";
 import { createServer as createHttpServer } from "http";
+import fs from "fs/promises";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
@@ -58,6 +59,27 @@ async function startServer() {
         hmr: false,
       },
       appType: "spa",
+    });
+
+    // The preview proxy cannot carry Vite's HMR socket. Serve transformed HTML
+    // without the injected client so it does not try to reconnect endlessly.
+    app.use(async (req, res, next) => {
+      if (req.method !== "GET" || !req.headers.accept?.includes("text/html")) {
+        return next();
+      }
+
+      try {
+        const indexHtml = await fs.readFile(path.join(process.cwd(), "index.html"), "utf8");
+        const transformedHtml = await vite.transformIndexHtml(req.originalUrl, indexHtml);
+        const htmlWithoutHmrClient = transformedHtml.replace(
+          /<script type="module" src="\/@vite\/client"><\/script>\s*/,
+          "",
+        );
+
+        res.status(200).type("html").send(htmlWithoutHmrClient);
+      } catch (error) {
+        next(error);
+      }
     });
     app.use(vite.middlewares);
   } else {
